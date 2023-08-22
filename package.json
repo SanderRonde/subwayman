@@ -6,6 +6,9 @@
   "bin": "./dist/src/bin/bin.js",
   "types": "./dist/src/index.d.ts",
   "main": "./dist/src/index.js",
+  "files": [
+    "dist/"
+  ],
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/node": "^20.5.3",
