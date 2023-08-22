@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { google } from 'googleapis';
 import * as express from 'express';
+import * as url from 'url';
 import * as https from 'https';
 
 class IPKeeper {
@@ -44,7 +45,8 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 	app.use(express.json());
 	app.use(express.query({}));
 
-	app.post('/authorize', (req, res) => {
+	const pathname = new url.URL(config.redirectUri).pathname;
+	app.post(pathname, (req, res) => {
 		const { ip, originalUrl } = req.body as {
 			ip?: string;
 			originalUrl?: string;
