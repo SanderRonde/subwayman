@@ -27,6 +27,12 @@ function shouldRedirectRequestTo(
 				method: 'POST',
 			},
 			(externalRes) => {
+				if (externalRes.statusCode !== 200) {
+					throw new Error(
+						`Subwayman: Failed to check authentication status: ${externalRes.statusCode}`
+					);
+				}
+
 				let data: string = '';
 				externalRes.on('data', (chunk) => {
 					data += chunk.toString();
