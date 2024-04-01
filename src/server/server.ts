@@ -47,11 +47,11 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 
 	const pathname = new url.URL(config.redirectUri).pathname;
 	app.post(pathname, (req, res) => {
-		const { ip, originalUrl } = req.body as {
+		const { ip, url } = req.body as {
 			ip?: string;
-			originalUrl?: string;
+			url?: string;
 		};
-		if (!ip || !originalUrl) {
+		if (!ip || !url) {
 			res.status(400);
 			res.end();
 			return;
@@ -72,7 +72,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 		const redirectUrl = oauth2Client.generateAuthUrl({
 			access_type: 'online',
 			scope: ['email', 'profile'],
-			state: originalUrl,
+			state: url,
 		});
 
 		res.send(
