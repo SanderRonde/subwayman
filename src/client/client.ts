@@ -79,7 +79,12 @@ export async function authenticatorRequestHandler(
 		config
 	);
 	if (redirectTo) {
-		return new Response(redirectTo, { status: 302 });
+		return new Response(undefined, {
+			status: 302,
+			headers: {
+				Location: redirectTo,
+			},
+		});
 	}
 	return undefined;
 }
