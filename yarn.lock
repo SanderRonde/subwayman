@@ -702,22 +702,6 @@ statuses@2.0.1:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-2.0.1.tgz#55cb000ccf1d48728bd23c685a063998cf1a1b63"
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
 
-"subwayman@file:.":
-  version "1.0.0"
-  dependencies:
-    express "^4.18.2"
-    googleapis "^126.0.0"
-    subwayman "file:."
-    ts-node "^10.9.1"
-
-"subwayman@file:/home/sander/projects/git/subwayman":
-  version "1.0.0"
-  dependencies:
-    express "^4.18.2"
-    googleapis "^126.0.0"
-    subwayman "file:."
-    ts-node "^10.9.1"
-
 toidentifier@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
