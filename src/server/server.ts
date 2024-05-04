@@ -29,6 +29,12 @@ class IPKeeper {
 		});
 	}
 
+	public addPermanentIP(ip: string): void {
+		this._validIPs.set(ip, {
+			expiresAt: new Date(8640000000000000),
+		});
+	}
+
 	public hasWhitelistedIP(ip: string): boolean {
 		return this._validIPs.has(ip);
 	}
@@ -168,6 +174,7 @@ export interface Config {
 	clientSecret: string;
 	redirectUri: string;
 	allowedEmails: string[];
+	allowedIps: string[];
 	port: number;
 	verbose: boolean;
 	redirect: boolean;
@@ -175,5 +182,8 @@ export interface Config {
 
 export function startServer(config: Config): Promise<void> {
 	const ipKeeper = new IPKeeper();
+	for (const ip of config.allowedIps) {
+		ipKeeper.addPermanentIP(ip);
+	}
 	return initRoutes(config, ipKeeper);
 }

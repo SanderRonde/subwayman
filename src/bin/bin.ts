@@ -7,6 +7,7 @@ function getArgs(): Config {
 	let clientSecret: string | null = null;
 	let redirectUri: string | null = null;
 	let allowedEmails: string | null = null;
+	let allowedIps: string | null = null;
 	let port: string | null = null;
 	let verbose: boolean = false;
 	let redirect: boolean = false;
@@ -21,6 +22,8 @@ function getArgs(): Config {
 			redirectUri = process.argv[++i];
 		} else if (arg === '--allowed-emails') {
 			allowedEmails = process.argv[++i];
+		} else if (arg === '--allowed-ips') {
+			allowedIps = process.argv[++i];
 		} else if (arg === '--port') {
 			port = process.argv[++i];
 		} else if (arg === '--verbose') {
@@ -41,6 +44,7 @@ function getArgs(): Config {
 		clientSecret,
 		redirectUri,
 		allowedEmails: allowedEmails.split(','),
+		allowedIps: allowedIps?.split(',') ?? [],
 		port: parseInt(port),
 		verbose,
 		redirect,
