@@ -9,6 +9,7 @@ function getArgs(): Config {
 	let allowedEmails: string | null = null;
 	let port: string | null = null;
 	let verbose: boolean = false;
+	let redirect: boolean = false;
 
 	for (let i = 1; i < process.argv.length; i++) {
 		const arg = process.argv[i];
@@ -24,6 +25,8 @@ function getArgs(): Config {
 			port = process.argv[++i];
 		} else if (arg === '--verbose') {
 			verbose = true;
+		} else if (arg === '--redirect') {
+			redirect = true;
 		}
 	}
 
@@ -40,6 +43,7 @@ function getArgs(): Config {
 		allowedEmails: allowedEmails.split(','),
 		port: parseInt(port),
 		verbose,
+		redirect,
 	};
 }
 

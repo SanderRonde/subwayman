@@ -140,16 +140,18 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 					ipKeeper.addIP(ip);
 
 					if (config.verbose) {
-						console.log(
-							`Added to whitelisted IPs ${ip}`
-						);
+						console.log(`Added to whitelisted IPs ${ip}`);
 					}
 
-					res.write(
-						`<html><body style="font-size: 150%;">Click <a href="${url}">here</a> to go to the original URL</body></html>`
-					);
-					res.status(200);
-					res.end();
+					if (config.redirect) {
+						res.redirect(url);
+					} else {
+						res.write(
+							`<html><body style="font-size: 150%;">Click <a href="${url}">here</a> to go to the original URL</body></html>`
+						);
+						res.status(200);
+						res.end();
+					}
 				});
 			}
 		);
@@ -168,6 +170,7 @@ export interface Config {
 	allowedEmails: string[];
 	port: number;
 	verbose: boolean;
+	redirect: boolean;
 }
 
 export function startServer(config: Config): Promise<void> {
