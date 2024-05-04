@@ -72,7 +72,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 		const redirectUrl = oauth2Client.generateAuthUrl({
 			access_type: 'online',
 			scope: ['email', 'profile'],
-			state: url,
+			state: JSON.stringify({ url, ip }),
 		});
 
 		res.send(
@@ -132,10 +132,10 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 						return;
 					}
 
-					const originalUrl = state;
-					ipKeeper.addIP(req.headers['x-forwarded-for'] as string);
+					const { url, ip } = JSON.parse(state);
+					ipKeeper.addIP(ip);
 					res.write(
-						`<html><body style="font-size: 150%;">Click <a href="${originalUrl}">here</a> to go to the original URL</body></html>`
+						`<html><body style="font-size: 150%;">Click <a href="${url}">here</a> to go to the original URL</body></html>`
 					);
 					res.status(200);
 					res.end();
