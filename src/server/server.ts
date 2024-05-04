@@ -68,6 +68,10 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 			return;
 		}
 
+		if (config.verbose) {
+			console.log(`Requesting authorization ${ip} - ${url}`);
+		}
+
 		// Redirect to OAuth page
 		const redirectUrl = oauth2Client.generateAuthUrl({
 			access_type: 'online',
@@ -134,6 +138,13 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 
 					const { url, ip } = JSON.parse(state);
 					ipKeeper.addIP(ip);
+
+					if (config.verbose) {
+						console.log(
+							`Added to whitelisted IPs ${ip}`
+						);
+					}
+
 					res.write(
 						`<html><body style="font-size: 150%;">Click <a href="${url}">here</a> to go to the original URL</body></html>`
 					);
@@ -156,6 +167,7 @@ export interface Config {
 	redirectUri: string;
 	allowedEmails: string[];
 	port: number;
+	verbose: boolean;
 }
 
 export function startServer(config: Config): Promise<void> {
