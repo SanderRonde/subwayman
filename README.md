@@ -41,8 +41,8 @@ const { authenticatorRequestHandler } = require('subwayman');
 
 // Your app
 Bun.serve({
-	fetch: (req) => {
-		const response = authenticatorRequestHandler(req, {
+	fetch: async (req) => {
+		const response = await authenticatorRequestHandler(req, {
 			host: '127.0.0.1', // Host the subwayman server is running on
 			port: 9999, // Port the subwayman server is running on
 		});
