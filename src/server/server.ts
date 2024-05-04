@@ -46,7 +46,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 	app.use(express.query({}));
 
 	const pathname = new url.URL(config.redirectUri).pathname;
-	app.post(pathname, (req, res) => {
+	app.post('/authorize', (req, res) => {
 		const { ip, url } = req.body as {
 			ip?: string;
 			url?: string;
@@ -83,7 +83,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 		);
 		res.end();
 	});
-	app.get('/authorize', async (req, res) => {
+	app.get(pathname, async (req, res) => {
 		// eslint-disable-next-line node/no-unsupported-features/es-builtins
 		const { code, state } = req.query as {
 			code?: string;
