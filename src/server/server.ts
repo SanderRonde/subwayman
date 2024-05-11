@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { google } from 'googleapis';
 import * as express from 'express';
-import * as url from 'url';
 import * as https from 'https';
+import * as url from 'url';
+import { Address4, Address6 } from 'ip-address';
 
 class IPKeeper {
 	private _validIPs: Map<
-		string,
+		Address4 | Address6,
 		{
 			expiresAt: Date;
 		}
@@ -23,20 +24,39 @@ class IPKeeper {
 		}, 1000 * 60 * 60);
 	}
 
-	public addIP(ip: string): void {
+	public static tryParseIp(ip: string): Address4 | Address6 | null {
+		if (Address6.isValid(ip)) {
+			return new Address6(ip);
+		}
+		if (Address4.isValid(ip)) {
+			return new Address4(ip);
+		}
+		return null;
+	}
+
+	public addIP(ip: Address4 | Address6): void {
 		this._validIPs.set(ip, {
 			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
 		});
 	}
 
-	public addPermanentIP(ip: string): void {
+	public addPermanentIP(ipString: string): void {
+		const ip = IPKeeper.tryParseIp(ipString);
+		if (!ip) {
+			throw new Error(`Invalid IP: ${ipString}`);
+		}
 		this._validIPs.set(ip, {
 			expiresAt: new Date(8640000000000000),
 		});
 	}
 
-	public hasWhitelistedIP(ip: string): boolean {
-		return this._validIPs.has(ip);
+	public hasWhitelistedIP(ip: Address4 | Address6): boolean {
+		for (const validIP of this._validIPs.keys()) {
+			if (ip.isInSubnet(validIP)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
@@ -53,11 +73,17 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 
 	const pathname = new url.URL(config.redirectUri).pathname;
 	app.post('/authorize', (req, res) => {
-		const { ip, url } = req.body as {
+		const { ip: ipString, url } = req.body as {
 			ip?: string;
 			url?: string;
 		};
-		if (!ip || !url) {
+		if (!ipString || !url) {
+			res.status(400);
+			res.end();
+			return;
+		}
+		const ip = IPKeeper.tryParseIp(ipString);
+		if (!ip) {
 			res.status(400);
 			res.end();
 			return;
@@ -142,7 +168,18 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 						return;
 					}
 
-					const { url, ip } = JSON.parse(state);
+					const { url, ip: ipString } = JSON.parse(state) as {
+						url: string;
+						ip: string;
+					};
+					const ip = IPKeeper.tryParseIp(ipString);
+					if (!ip) {
+						console.log(`Invalid IP ${ipString}`);
+						res.status(400);
+						res.end();
+						return;
+					}
+
 					ipKeeper.addIP(ip);
 
 					if (config.verbose) {
