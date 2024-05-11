@@ -1,6 +1,6 @@
 {
   "name": "subwayman",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "author": "\"Sander Ronde\" <awsdfgvhbjn@gmail.com>",
   "license": "MIT",
   "bin": "./dist/src/bin/bin.js",
