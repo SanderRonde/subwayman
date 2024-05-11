@@ -101,7 +101,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 		}
 
 		if (config.verbose) {
-			console.log(`Requesting authorization ${ip} - ${url}`);
+			console.log(`Requesting authorization ${ip.address} - ${url}`);
 		}
 
 		// Redirect to OAuth page
@@ -183,7 +183,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 					ipKeeper.addIP(ip);
 
 					if (config.verbose) {
-						console.log(`Added to whitelisted IPs ${ip}`);
+						console.log(`Added to whitelisted IPs ${ip.address}`);
 					}
 
 					if (config.redirect) {
