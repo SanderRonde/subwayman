@@ -108,7 +108,7 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 		const redirectUrl = oauth2Client.generateAuthUrl({
 			access_type: 'online',
 			scope: ['email', 'profile'],
-			state: JSON.stringify({ url, ip }),
+			state: JSON.stringify({ url, ip: ipString }),
 		});
 
 		res.send(
