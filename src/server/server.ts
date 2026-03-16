@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { google } from 'googleapis';
+import type { Credentials } from 'google-auth-library';
 import * as express from 'express';
 import * as https from 'https';
 import * as url from 'url';
@@ -131,8 +132,21 @@ function initRoutes(config: Config, ipKeeper: IPKeeper): Promise<void> {
 			return;
 		}
 
-		// Exchange code for token
-		const { tokens } = await oauth2Client.getToken(code);
+		let tokens: Credentials;
+		try {
+			const result = await oauth2Client.getToken(code);
+			tokens = result.tokens;
+		} catch (err) {
+			const status = (err as { response?: { status?: number } })?.response?.status ?? 400;
+			if (config.verbose) {
+				const message = (err as { message?: string })?.message ?? String(err);
+				console.error(`OAuth token exchange failed: ${message}`);
+			}
+			res.status(status >= 400 && status < 600 ? status : 400);
+			res.end();
+			return;
+		}
+
 		oauth2Client.setCredentials(tokens);
 
 		// Exchange code for info
